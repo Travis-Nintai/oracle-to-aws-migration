@@ -18,6 +18,46 @@ oracle-to-aws-migration/
 └── docs/      -- architecture, workflows, target comparison, cutover checklist
 ```
 
+## Scripts and templates
+
+| File | What it does |
+|---|---|
+| `sql/migration_readiness.sql` | Read-only pre-migration assessment: version, character set, size, object inventory, features in use, invalid objects, tables without primary keys, LOB and LONG columns, partitioning, TDE, ARCHIVELOG mode and supplemental logging; exit 2 when a blocker is found |
+| `datapump/export_full.par` | Template for a full database export with parallel workers and compression |
+| `datapump/import_full.par` | Template for a full database import with schema and tablespace remapping |
+| `dms/task-settings.json` | DMS replication task settings template: full load, LOB handling, logging, CDC tuning, and row-level validation |
+
+Run the readiness check first (connect as a privileged user, e.g. `/ as sysdba`):
+
+```
+sqlplus / as sysdba @sql/migration_readiness.sql
+```
+
+Thresholds live in the `DEFINE` lines at the top of the script. A clean report means the database can be assessed, not that the migration will succeed. Read sections 7 and 8 before choosing the migration method.
+
+Take a full export with the template (replace the placeholders first, and read the header before running it):
+
+```
+expdp <USER>@<SERVICE_NAME> PARFILE=datapump/export_full.par
+```
+
+Load it into the target:
+
+```
+impdp <USER>@<SERVICE_NAME> PARFILE=datapump/import_full.par
+```
+
+## Docs
+
+| Doc | What it covers |
+|---|---|
+| `docs/migration-architecture.md` | Target options, migration methods, what the readiness check tells you, licensing notes, and what does not move unchanged |
+| `docs/dms-datapump-workflow.md` | DMS and Data Pump workflows step by step, with settings and pitfalls |
+| `docs/ec2-vs-rds.md` | EC2 versus RDS versus RDS Custom: control, patching, backup, high availability, performance, licensing, and cost |
+| `docs/cutover-checklist.md` | The cutover sequence: weeks before, days before, the window itself, rollback decision points, and validation queries |
+
+Start with `docs/migration-architecture.md` if the target has not been chosen yet. Start with `docs/cutover-checklist.md` if the move is already planned.
+
 ## Assumptions
 
 - Oracle 11g or later on the source. The readiness check reads `V$INSTANCE`, `V$DATABASE`, `DBA_DATA_FILES`, `DBA_OBJECTS`, `DBA_FEATURE_USAGE_STATISTICS`, and related catalog views. Some of those views need a privileged account.
