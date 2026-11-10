@@ -1,0 +1,18 @@
+# Full database export template. Replace the placeholders before running.
+# Run as a user with the DATAPUMP_EXP_FULL_DATABASE role.
+# See docs/dms-datapump-workflow.md for the workflow and pitfalls.
+DIRECTORY=<DATA_PUMP_DIRECTORY>
+DUMPFILE=<DB_NAME>_full_%U.dmp
+LOGFILE=<DB_NAME>_export.log
+FULL=Y
+PARALLEL=4
+COMPRESSION=ALL
+METRICS=Y
+LOGTIME=ALL
+FLASHBACK_TIME=SYSTIMESTAMP
+# VERSION=<TARGET_VERSION>
+#   Uncomment and set when the target release is older than the source.
+# ENCRYPTION=ALL
+#   Uncomment when the source has encrypted tablespaces or encrypted
+#   columns. Supply ENCRYPTION_PASSWORD as well, and keep it out of
+#   version control.

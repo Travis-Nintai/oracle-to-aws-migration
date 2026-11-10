@@ -1,0 +1,17 @@
+# Full database import template. Replace the placeholders before running.
+# Run as a user with the DATAPUMP_IMP_FULL_DATABASE role.
+# See docs/dms-datapump-workflow.md for the workflow and pitfalls.
+DIRECTORY=<DATA_PUMP_DIRECTORY>
+DUMPFILE=<DB_NAME>_full_%U.dmp
+LOGFILE=<DB_NAME>_import.log
+FULL=Y
+PARALLEL=4
+METRICS=Y
+LOGTIME=ALL
+REMAP_SCHEMA=<SOURCE_SCHEMA>:<TARGET_SCHEMA>
+REMAP_TABLESPACE=<SOURCE_TABLESPACE>:<TARGET_TABLESPACE>
+TRANSFORM=DISABLE_ARCHIVE_LOGGING:Y
+# TABLE_EXISTS_ACTION=REPLACE
+#   Uncomment only when re-importing over tables that already exist on
+#   the target. The default skips existing tables, which hides a partial
+#   load instead of replacing it.
