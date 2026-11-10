@@ -1,0 +1,35 @@
+# SQL*Plus / Oracle artifacts
+*.log
+*.lis
+*.spo
+*.dmp
+*.trc
+*.trm
+*.aud
+
+# Data Pump dump files and exports - never commit these
+*.dmp
+*.dp
+
+# DMS task exports and replication logs - never commit these
+dms-export-*.json
+*.dmslog
+
+# Editor and OS artifacts
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Credentials and environment-specific files - never commit these
+*.wallet
+wallet.*
+cwallet.*
+*.pfx
+*.pem
+*.key
+tnsnames.ora
+sqlnet.ora
+*.aws
+credentials
